@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "Chatwork Translator",
+  "version": "0.2",
+
+  "permissions": ["storage"],
+
+  "options_page": "options/options.html",
+
+  "content_scripts": [
+    {
+      "matches": ["https://www.chatwork.com/*"],
+      "js": [
+        "cache.js",
+        "ui.js",
+        "dom.js",
+        "translator.js",
+        "content.js"
+      ]
+    }
+  ]
+}
