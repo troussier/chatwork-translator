@@ -64,6 +64,6 @@ Rules:
       }
     } catch {}
 
-    return texts.map(() => "");
+    throw new Error("翻訳結果の形式が不正でした。再試行してください。");
   }
 };
