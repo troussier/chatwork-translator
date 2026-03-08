@@ -8,19 +8,21 @@
 
 <h2>Chatwork Translator</h2>
 
-<label>
-  OpenAI API Key
-</label><br>
+<label>OpenAI API Key</label><br>
 <input id="apiKey" type="password" size="50"><br><br>
 
-<label>
-  Target Language
-</label><br>
+<label>Target Language</label><br>
 <select id="targetLang">
   <option value="en">English</option>
   <option value="ja">Japanese</option>
   <option value="zh">Chinese</option>
 </select>
+
+<br><br>
+
+<label>Firebase Database URL <span style="font-size:12px;color:#888;">（例: https://your-project-default-rtdb.firebaseio.com）</span></label><br>
+<input id="firebaseDbUrl" type="text" size="60" placeholder="https://your-project-default-rtdb.firebaseio.com"><br>
+<span style="font-size:12px;color:#888;">未入力の場合は端末ローカルにのみ保存されます</span>
 
 <br><br>
 <button id="save">Save</button>

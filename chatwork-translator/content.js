@@ -41,25 +41,26 @@ async function doTranslate(messageNode, id, utm, forceRetranslate) {
   if (existing) existing.remove();
 
   chrome.storage.sync.get(
-    ["apiKey", "targetLang"],
-    async ({ apiKey, targetLang }) => {
+    ["apiKey", "targetLang", "firebaseDbUrl"],
+    async ({ apiKey, targetLang, firebaseDbUrl }) => {
 
       const pre = CWDom.getPreNode(messageNode);
       if (!pre) return;
 
       const key = CWCache.key(id, targetLang);
-      const cached = CWCache.get(key);
-
       const insert = (el) => pre.insertAdjacentElement("afterend", el);
 
-      if (cached && !forceRetranslate) {
-        const stale = CWCache.isStale(key, utm);
-        insert(CWUI.result(
-          buildTranslatedNode(pre, cached.translations),
-          stale,
-          () => doTranslate(messageNode, id, utm, true)
-        ));
-        return;
+      if (!forceRetranslate) {
+        const cached = await CWCache.getWithFallback(key, firebaseDbUrl);
+        if (cached) {
+          const stale = CWCache.isStale(key, utm);
+          insert(CWUI.result(
+            buildTranslatedNode(pre, cached.translations),
+            stale,
+            () => doTranslate(messageNode, id, utm, true)
+          ));
+          return;
+        }
       }
 
       const loading = CWUI.loading();
@@ -72,7 +73,6 @@ async function doTranslate(messageNode, id, utm, forceRetranslate) {
         const texts = parts.map(el => CWDom.extractSpanText(el));
         translations = await CWTranslator.translateParts(texts, apiKey, targetLang);
       } else {
-        // spanが見つからない場合のフォールバック
         const text = CWDom.extractText(messageNode);
         const translated = await CWTranslator.translate(text, apiKey, targetLang);
         translations = [translated];
@@ -81,6 +81,8 @@ async function doTranslate(messageNode, id, utm, forceRetranslate) {
       loading.remove();
 
       CWCache.set(key, translations, utm);
+      CWCache.firebaseSet(key, translations, utm, firebaseDbUrl);
+
       insert(CWUI.result(
         buildTranslatedNode(pre, translations),
         false,
