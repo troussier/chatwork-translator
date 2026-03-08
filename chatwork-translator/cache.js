@@ -56,7 +56,7 @@ window.CWCache = {
     fetch(`${dbUrl}/translations/${key}.json`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ translations, utm, createdAt: Date.now() })
+      body: JSON.stringify({ translations, utm })
     }).catch(() => {});
   },
 
@@ -64,8 +64,9 @@ window.CWCache = {
     const local = this.get(key);
     if (local) return local;
 
+    // FirebaseはTTLなし（永続保持）
     const remote = await this.firebaseGet(key, dbUrl);
-    if (remote && !this._isExpired(remote)) {
+    if (remote) {
       this.set(key, remote.translations, remote.utm);
       return remote;
     }
