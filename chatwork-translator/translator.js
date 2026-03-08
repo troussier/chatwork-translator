@@ -28,6 +28,10 @@ Rules:
       })
     });
     const data = await res.json();
+    if (!res.ok) {
+      const msg = data.error?.message || `API error ${res.status}`;
+      throw new Error(msg);
+    }
     return data.choices?.[0]?.message?.content?.trim();
   },
 

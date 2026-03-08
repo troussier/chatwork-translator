@@ -58,6 +58,47 @@ window.CWUI = {
     return wrap;
   },
 
+  error(message, onRetry) {
+    const wrap = document.createElement("div");
+    wrap.className = "cw-translation-wrap";
+
+    const hr = document.createElement("hr");
+    hr.style.cssText = "border: none; border-top: 1px solid #f5c0c0; margin: 8px 0;";
+
+    const body = document.createElement("div");
+    body.style.cssText = "display: flex; justify-content: space-between; align-items: center; gap: 8px;";
+
+    const msg = document.createElement("div");
+    msg.style.cssText = "font-size: 13px; color: #c0392b;";
+    msg.innerHTML = message;
+
+    body.appendChild(msg);
+
+    if (onRetry) {
+      const retryBtn = document.createElement("button");
+      retryBtn.textContent = "再試行";
+      retryBtn.style.cssText = `
+        padding: 1px 7px;
+        font-size: 11px;
+        color: #888;
+        background: transparent;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        cursor: pointer;
+        line-height: 1.6;
+        flex-shrink: 0;
+      `;
+      retryBtn.onmouseenter = () => { retryBtn.style.background = "#f5f5f5"; retryBtn.style.color = "#555"; };
+      retryBtn.onmouseleave = () => { retryBtn.style.background = "transparent"; retryBtn.style.color = "#888"; };
+      retryBtn.onclick = (e) => { e.stopPropagation(); onRetry(); };
+      body.appendChild(retryBtn);
+    }
+
+    wrap.appendChild(hr);
+    wrap.appendChild(body);
+    return wrap;
+  },
+
   result(content, stale, onRetranslate) {
     const wrap = document.createElement("div");
     wrap.className = "cw-translation-wrap";

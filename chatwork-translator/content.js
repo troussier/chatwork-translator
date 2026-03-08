@@ -63,31 +63,47 @@ async function doTranslate(messageNode, id, utm, forceRetranslate) {
         }
       }
 
+      if (!apiKey) {
+        const optionsUrl = chrome.runtime.getURL("options/options.html");
+        insert(CWUI.error(
+          `APIキーが未設定です。<a href="${optionsUrl}" target="_blank" style="color:#c0392b;">設定画面</a>から登録してください。`
+        ));
+        return;
+      }
+
       const loading = CWUI.loading();
       insert(loading);
 
-      const parts = CWDom.getTranslatableParts(pre);
-      let translations;
+      try {
+        const parts = CWDom.getTranslatableParts(pre);
+        let translations;
 
-      if (parts.length > 0) {
-        const texts = parts.map(el => CWDom.extractSpanText(el));
-        translations = await CWTranslator.translateParts(texts, apiKey, targetLang);
-      } else {
-        const text = CWDom.extractText(messageNode);
-        const translated = await CWTranslator.translate(text, apiKey, targetLang);
-        translations = [translated];
+        if (parts.length > 0) {
+          const texts = parts.map(el => CWDom.extractSpanText(el));
+          translations = await CWTranslator.translateParts(texts, apiKey, targetLang);
+        } else {
+          const text = CWDom.extractText(messageNode);
+          const translated = await CWTranslator.translate(text, apiKey, targetLang);
+          translations = [translated];
+        }
+
+        loading.remove();
+
+        CWCache.set(key, translations, utm);
+        CWCache.firebaseSet(key, translations, utm, firebaseDbUrl);
+
+        insert(CWUI.result(
+          buildTranslatedNode(pre, translations),
+          false,
+          () => doTranslate(messageNode, id, utm, true)
+        ));
+      } catch (e) {
+        loading.remove();
+        insert(CWUI.error(
+          `翻訳に失敗しました: ${e.message}`,
+          () => doTranslate(messageNode, id, utm, forceRetranslate)
+        ));
       }
-
-      loading.remove();
-
-      CWCache.set(key, translations, utm);
-      CWCache.firebaseSet(key, translations, utm, firebaseDbUrl);
-
-      insert(CWUI.result(
-        buildTranslatedNode(pre, translations),
-        false,
-        () => doTranslate(messageNode, id, utm, true)
-      ));
     }
   );
 }
