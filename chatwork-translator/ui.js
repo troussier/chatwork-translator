@@ -70,7 +70,11 @@ window.CWUI = {
 
     const msg = document.createElement("div");
     msg.style.cssText = "font-size: 13px; color: #c0392b;";
-    msg.innerHTML = message;
+    if (typeof message === "string") {
+      msg.textContent = message;
+    } else {
+      msg.appendChild(message);
+    }
 
     body.appendChild(msg);
 

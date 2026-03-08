@@ -75,9 +75,16 @@ async function doTranslate(messageNode, id, utm, forceRetranslate) {
 
   if (!apiKey) {
     const optionsUrl = chrome.runtime.getURL("options/options.html");
-    insert(CWUI.error(
-      `APIキーが未設定です。<a href="${optionsUrl}" target="_blank" style="color:#c0392b;">設定画面</a>から登録してください。`
-    ));
+    const msg = document.createDocumentFragment();
+    msg.appendChild(document.createTextNode("APIキーが未設定です。"));
+    const a = document.createElement("a");
+    a.href = optionsUrl;
+    a.textContent = "設定画面";
+    a.target = "_blank";
+    a.style.color = "#c0392b";
+    msg.appendChild(a);
+    msg.appendChild(document.createTextNode("から登録してください。"));
+    insert(CWUI.error(msg));
     return;
   }
 
