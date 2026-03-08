@@ -3,33 +3,137 @@
 <head>
   <meta charset="UTF-8">
   <title>Chatwork Translator Settings</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      color: #333;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 24px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 24px;
+      max-width: 480px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin: 0 0 24px;
+      font-size: 18px;
+      color: #222;
+    }
+    .field {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #444;
+    }
+    .hint {
+      font-size: 12px;
+      color: #888;
+      font-weight: normal;
+      margin-left: 6px;
+    }
+    input[type="text"],
+    input[type="password"],
+    select {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+      background: #fafafa;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #4a90e2;
+      background: #fff;
+    }
+    .row {
+      display: flex;
+      gap: 12px;
+    }
+    .row .field {
+      flex: 1;
+    }
+    .notice {
+      font-size: 12px;
+      color: #b8860b;
+      background: #fffbe6;
+      border: 1px solid #ffe58f;
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-top: 6px;
+      display: none;
+    }
+    button#save {
+      padding: 9px 24px;
+      background: #4a90e2;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    button#save:hover {
+      background: #357abd;
+    }
+    #status {
+      margin-top: 10px;
+      font-size: 13px;
+      color: #4a90e2;
+      min-height: 20px;
+    }
+  </style>
 </head>
 <body>
+<div class="card">
+  <h2>Chatwork Translator</h2>
 
-<h2>Chatwork Translator</h2>
+  <div class="field">
+    <label>OpenAI API Key</label>
+    <input id="apiKey" type="password" placeholder="sk-...">
+  </div>
 
-<label>OpenAI API Key</label><br>
-<input id="apiKey" type="password" size="50"><br><br>
+  <div class="row">
+    <div class="field">
+      <label>翻訳元言語</label>
+      <select id="sourceLang">
+        <option value="auto">自動判定</option>
+        <option value="ja">日本語</option>
+        <option value="vi">ベトナム語</option>
+        <option value="en">英語</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>翻訳先言語</label>
+      <select id="targetLang">
+        <option value="auto">自動（ブラウザの言語）</option>
+        <option value="ja">日本語</option>
+        <option value="vi">ベトナム語</option>
+        <option value="en">英語</option>
+      </select>
+    </div>
+  </div>
 
-<label>Target Language</label><br>
-<select id="targetLang">
-  <option value="en">English</option>
-  <option value="ja">Japanese</option>
-  <option value="zh">Chinese</option>
-</select>
+  <div class="field">
+    <label>Firebase Database URL <span class="hint">（翻訳キャッシュの共有）</span></label>
+    <input id="firebaseDbUrl" type="text" placeholder="https://your-project-default-rtdb.firebaseio.com">
+    <div id="firebaseNotice" class="notice">
+      未設定の場合、翻訳はこの端末にのみ保存されます。チームで共有するにはFirebase URLを設定してください。
+    </div>
+  </div>
 
-<br><br>
-
-<label>Firebase Database URL <span style="font-size:12px;color:#888;">（例: https://your-project-default-rtdb.firebaseio.com）</span></label><br>
-<input id="firebaseDbUrl" type="text" size="60" placeholder="https://your-project-default-rtdb.firebaseio.com"><br>
-<span style="font-size:12px;color:#888;">未入力の場合は端末ローカルにのみ保存されます</span>
-
-<br><br>
-<button id="save">Save</button>
-
-<p id="status"></p>
+  <button id="save">Save</button>
+  <p id="status"></p>
+</div>
 
 <script src="options.js"></script>
-
 </body>
 </html>

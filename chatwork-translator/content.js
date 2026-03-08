@@ -1,5 +1,11 @@
 console.log("Chatwork Translator Loaded");
 
+function resolveTargetLang(targetLang) {
+  if (targetLang !== "auto") return targetLang;
+  const lang = (navigator.language || "ja").split("-")[0].toLowerCase();
+  return ["ja", "vi", "en"].includes(lang) ? lang : "ja";
+}
+
 async function inject() {
 
   CWDom.getMessages().forEach((ts) => {
@@ -41,13 +47,14 @@ async function doTranslate(messageNode, id, utm, forceRetranslate) {
   if (existing) existing.remove();
 
   chrome.storage.sync.get(
-    ["apiKey", "targetLang", "firebaseDbUrl"],
-    async ({ apiKey, targetLang, firebaseDbUrl }) => {
+    ["apiKey", "sourceLang", "targetLang", "firebaseDbUrl"],
+    async ({ apiKey, sourceLang = "auto", targetLang = "ja", firebaseDbUrl }) => {
 
       const pre = CWDom.getPreNode(messageNode);
       if (!pre) return;
 
-      const key = CWCache.key(id, targetLang);
+      const resolvedTarget = resolveTargetLang(targetLang);
+      const key = CWCache.key(id, resolvedTarget);
       const insert = (el) => pre.insertAdjacentElement("afterend", el);
 
       if (!forceRetranslate) {
@@ -80,10 +87,10 @@ async function doTranslate(messageNode, id, utm, forceRetranslate) {
 
         if (parts.length > 0) {
           const texts = parts.map(el => CWDom.extractSpanText(el));
-          translations = await CWTranslator.translateParts(texts, apiKey, targetLang);
+          translations = await CWTranslator.translateParts(texts, apiKey, sourceLang, resolvedTarget);
         } else {
           const text = CWDom.extractText(messageNode);
-          const translated = await CWTranslator.translate(text, apiKey, targetLang);
+          const translated = await CWTranslator.translate(text, apiKey, sourceLang, resolvedTarget);
           translations = [translated];
         }
 

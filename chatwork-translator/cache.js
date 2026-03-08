@@ -1,6 +1,12 @@
+const CW_CACHE_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30日
+
 window.CWCache = {
   key(id, lang) {
     return `cw_translation_${id}_${lang}`;
+  },
+
+  _isExpired(entry) {
+    return entry.createdAt && Date.now() - entry.createdAt > CW_CACHE_TTL_MS;
   },
 
   get(key) {
@@ -12,6 +18,11 @@ window.CWCache = {
       if (parsed.translation && !parsed.translations) {
         parsed.translations = [parsed.translation];
       }
+      // TTLチェック
+      if (this._isExpired(parsed)) {
+        localStorage.removeItem(key);
+        return null;
+      }
       return parsed;
     } catch {
       return null;
@@ -19,7 +30,7 @@ window.CWCache = {
   },
 
   set(key, translations, utm) {
-    localStorage.setItem(key, JSON.stringify({ translations, utm }));
+    localStorage.setItem(key, JSON.stringify({ translations, utm, createdAt: Date.now() }));
   },
 
   isStale(key, currentUtm) {
@@ -28,14 +39,13 @@ window.CWCache = {
     return cached.utm !== currentUtm;
   },
 
-  // Firebase Realtime Database REST API
   async firebaseGet(key, dbUrl) {
     if (!dbUrl) return null;
     try {
       const res = await fetch(`${dbUrl}/translations/${key}.json`);
       if (!res.ok) return null;
       const data = await res.json();
-      return data; // { translations, utm } or null
+      return data;
     } catch {
       return null;
     }
@@ -46,19 +56,19 @@ window.CWCache = {
     fetch(`${dbUrl}/translations/${key}.json`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ translations, utm })
+      body: JSON.stringify({ translations, utm, createdAt: Date.now() })
     }).catch(() => {});
   },
 
-  // localStorageを優先、なければFirebaseを参照してローカルにも保存
   async getWithFallback(key, dbUrl) {
     const local = this.get(key);
     if (local) return local;
 
     const remote = await this.firebaseGet(key, dbUrl);
-    if (remote) {
+    if (remote && !this._isExpired(remote)) {
       this.set(key, remote.translations, remote.utm);
+      return remote;
     }
-    return remote;
+    return null;
   }
 };

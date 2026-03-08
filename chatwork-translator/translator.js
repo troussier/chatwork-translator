@@ -1,12 +1,19 @@
+const CW_LANG_NAMES = { ja: "Japanese", vi: "Vietnamese", en: "English" };
+
 window.CWTranslator = {
 
-  _systemPrompt(lang) {
+  _systemPrompt(sourceLang, targetLang) {
+    const target = CW_LANG_NAMES[targetLang] || targetLang;
+    const sourceClause = (sourceLang && sourceLang !== "auto")
+      ? `Translate the message from ${CW_LANG_NAMES[sourceLang] || sourceLang} into natural ${target}`
+      : `Detect the language and translate the message into natural ${target}`;
+
     return `You are a translator for workplace chat.
-Translate the message into natural ${lang} used in casual workplace communication.
+${sourceClause} used in casual workplace communication.
 
 Rules:
 - Avoid literal translation.
-- Rewrite sentences so they sound natural in ${lang}.
+- Rewrite sentences so they sound natural in ${target}.
 - Remove Vietnamese pronouns like: anh, chị, em, mình.
 - Do not translate names.
 - Keep numbers, dates, URLs and technical terms unchanged.
@@ -15,17 +22,14 @@ Rules:
 - Output only the translated sentence.`;
   },
 
-  async _post(body) {
+  async _post(apiKey, messages) {
     const res = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${body.apiKey}`
+        Authorization: `Bearer ${apiKey}`
       },
-      body: JSON.stringify({
-        model: "gpt-4.1-mini",
-        messages: body.messages
-      })
+      body: JSON.stringify({ model: "gpt-4.1-mini", messages })
     });
     const data = await res.json();
     if (!res.ok) {
@@ -35,40 +39,23 @@ Rules:
     return data.choices?.[0]?.message?.content?.trim();
   },
 
-  async translate(text, apiKey, lang) {
-    return this._post({
-      apiKey,
-      messages: [
-        { role: "system", content: this._systemPrompt(lang) },
-        { role: "user", content: text }
-      ]
-    });
+  async translate(text, apiKey, sourceLang, targetLang) {
+    return this._post(apiKey, [
+      { role: "system", content: this._systemPrompt(sourceLang, targetLang) },
+      { role: "user", content: text }
+    ]);
   },
 
-  // 複数テキストをJSON配列として一括翻訳し、翻訳後の配列を返す
-  async translateParts(texts, apiKey, lang) {
-    const systemPrompt = `You are a translator for workplace chat.
-Translate each message part into natural ${lang} used in casual workplace communication.
-
-Rules:
-- Avoid literal translation.
-- Rewrite sentences so they sound natural in ${lang}.
-- Remove Vietnamese pronouns like: anh, chị, em, mình.
-- Do not translate names.
-- Keep numbers, dates, URLs and technical terms unchanged.
-- Prefer simple and natural expressions used between coworkers.
-- Do not add explanations.
-- Input: a JSON array of strings.
+  async translateParts(texts, apiKey, sourceLang, targetLang) {
+    const systemPrompt = this._systemPrompt(sourceLang, targetLang)
+      .replace("- Output only the translated sentence.", `- Input: a JSON array of strings.
 - Output: a JSON array of translated strings in the same order.
-- Output ONLY the JSON array, no other text.`;
+- Output ONLY the JSON array, no other text.`);
 
-    const content = await this._post({
-      apiKey,
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: JSON.stringify(texts) }
-      ]
-    });
+    const content = await this._post(apiKey, [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: JSON.stringify(texts) }
+    ]);
 
     try {
       const parsed = JSON.parse(content);
