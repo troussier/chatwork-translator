@@ -58,7 +58,7 @@ window.CWUI = {
     return wrap;
   },
 
-  result(text, stale, onRetranslate) {
+  result(content, stale, onRetranslate) {
     const wrap = document.createElement("div");
     wrap.className = "cw-translation-wrap";
 
@@ -70,8 +70,14 @@ window.CWUI = {
 
     const textEl = document.createElement("div");
     textEl.className = "cw-translation-result";
-    textEl.style.cssText = "font-size: 13px; color: #333; white-space: pre-wrap; line-height: 1.6; flex: 1;";
-    textEl.appendChild(this.linkify(text));
+    textEl.style.cssText = "font-size: 13px; color: #333; line-height: 1.6; flex: 1; min-width: 0;";
+
+    if (typeof content === "string") {
+      textEl.style.whiteSpace = "pre-wrap";
+      textEl.appendChild(this.linkify(content));
+    } else {
+      textEl.appendChild(content);
+    }
 
     const actions = document.createElement("div");
     actions.style.cssText = "display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0;";

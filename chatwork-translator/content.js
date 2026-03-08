@@ -20,6 +20,17 @@ async function inject() {
   });
 }
 
+function buildTranslatedNode(pre, translations) {
+  const clone = CWDom.clonePreForTranslation(pre);
+  const parts = CWDom.getTranslatableParts(clone);
+
+  parts.forEach((el, i) => {
+    if (translations[i]) el.textContent = translations[i];
+  });
+
+  return clone;
+}
+
 async function doTranslate(messageNode, id, utm, forceRetranslate) {
 
   const existing = messageNode.querySelector(".cw-translation-wrap");
@@ -44,7 +55,7 @@ async function doTranslate(messageNode, id, utm, forceRetranslate) {
       if (cached && !forceRetranslate) {
         const stale = CWCache.isStale(key, utm);
         insert(CWUI.result(
-          cached.translation,
+          buildTranslatedNode(pre, cached.translations),
           stale,
           () => doTranslate(messageNode, id, utm, true)
         ));
@@ -54,15 +65,24 @@ async function doTranslate(messageNode, id, utm, forceRetranslate) {
       const loading = CWUI.loading();
       insert(loading);
 
-      const text = CWDom.extractText(messageNode);
-      const translated =
-        await CWTranslator.translate(text, apiKey, targetLang);
+      const parts = CWDom.getTranslatableParts(pre);
+      let translations;
+
+      if (parts.length > 0) {
+        const texts = parts.map(el => CWDom.extractSpanText(el));
+        translations = await CWTranslator.translateParts(texts, apiKey, targetLang);
+      } else {
+        // spanが見つからない場合のフォールバック
+        const text = CWDom.extractText(messageNode);
+        const translated = await CWTranslator.translate(text, apiKey, targetLang);
+        translations = [translated];
+      }
 
       loading.remove();
 
-      CWCache.set(key, translated, utm);
+      CWCache.set(key, translations, utm);
       insert(CWUI.result(
-        translated,
+        buildTranslatedNode(pre, translations),
         false,
         () => doTranslate(messageNode, id, utm, true)
       ));

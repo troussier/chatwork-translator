@@ -1,15 +1,8 @@
 window.CWDom = {
 
-  extractText(messageNode) {
-    const body = messageNode.querySelector("pre.sc-doOioq");
-    if (!body) return "";
+  _extractNodeText(node) {
+    const clone = node.cloneNode(true);
 
-    const clone = body.cloneNode(true);
-
-    // 返信元・引用・ファイル添付は翻訳対象外
-    clone.querySelectorAll("._replyMessage, .chatQuote, .chatInfo").forEach(e => e.remove());
-
-    // [code] ブロックはプレースホルダに置換（翻訳させない）
     const codeBlocks = [];
     clone.querySelectorAll("[data-cwopen='[code]']").forEach((el, i) => {
       const placeholder = `\u0000CODE${i}\u0000`;
@@ -17,23 +10,29 @@ window.CWDom = {
       el.replaceWith(document.createTextNode(placeholder));
     });
 
-    // 絵文字画像を alt テキストに置換（innerText では消えるため）
     clone.querySelectorAll("img[data-cwtag]").forEach(img => {
       if (img.alt) img.replaceWith(document.createTextNode(img.alt));
       else img.remove();
     });
 
     let text = clone.innerText.trim();
-
-    // Chatwork が挿入する「編集済み」を末尾から除去
     text = text.replace(/\n?編集済み$/, "").trim();
 
-    // [code] プレースホルダを元の内容に戻す
     codeBlocks.forEach(({ placeholder, text: code }) => {
       text = text.replace(placeholder, `[code]${code}[/code]`);
     });
 
     return text;
+  },
+
+  extractText(messageNode) {
+    const body = messageNode.querySelector("pre");
+    if (!body) return "";
+
+    const clone = body.cloneNode(true);
+    clone.querySelectorAll("._replyMessage, .chatQuote, .chatInfo").forEach(e => e.remove());
+
+    return this._extractNodeText(clone);
   },
 
   getMessages() {
@@ -45,6 +44,23 @@ window.CWDom = {
   },
 
   getPreNode(messageNode) {
-    return messageNode.querySelector("pre.sc-doOioq");
+    return messageNode.querySelector("pre");
+  },
+
+  extractSpanText(el) {
+    return this._extractNodeText(el);
+  },
+
+  // 翻訳対象要素を返す（直接子span＋引用内span）、ドキュメント順
+  // data-cwtag付きのspanはリンク等の特殊ノードなので除外
+  getTranslatableParts(pre) {
+    return Array.from(pre.querySelectorAll(":scope > span:not([data-cwtag]), .chatQuote .quoteText span:not([data-cwtag])"));
+  },
+
+  // 翻訳表示用にpreをクローン。[rp]リプライUIを除去して返す
+  clonePreForTranslation(pre) {
+    const clone = pre.cloneNode(true);
+    clone.querySelectorAll('[data-cwtag^="[rp"]').forEach(el => el.remove());
+    return clone;
   }
 };

@@ -7,14 +7,19 @@ window.CWCache = {
     const val = localStorage.getItem(key);
     if (!val) return null;
     try {
-      return JSON.parse(val);
+      const parsed = JSON.parse(val);
+      // 旧フォーマット（translation: string）の移行
+      if (parsed.translation && !parsed.translations) {
+        parsed.translations = [parsed.translation];
+      }
+      return parsed;
     } catch {
       return null;
     }
   },
 
-  set(key, translation, utm) {
-    localStorage.setItem(key, JSON.stringify({ translation, utm }));
+  set(key, translations, utm) {
+    localStorage.setItem(key, JSON.stringify({ translations, utm }));
   },
 
   isStale(key, currentUtm) {
