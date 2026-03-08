@@ -1,0 +1,18 @@
+{
+  "extName":          { "message": "Chatwork Translator" },
+  "optionsTitle":     { "message": "Chatwork Translator" },
+  "apiKeyLabel":      { "message": "OpenAI API Key" },
+  "sourceLangLabel":  { "message": "Source Language" },
+  "targetLangLabel":  { "message": "Target Language" },
+  "langAuto":         { "message": "Auto detect" },
+  "langAutoTarget":   { "message": "Auto (browser language)" },
+  "langJa":           { "message": "Japanese" },
+  "langVi":           { "message": "Vietnamese" },
+  "langEn":           { "message": "English" },
+  "firebaseLabel":    { "message": "Firebase Database URL" },
+  "firebaseHint":     { "message": "(shared translation cache)" },
+  "firebasePlaceholder": { "message": "https://your-project-default-rtdb.firebaseio.com" },
+  "firebaseNotice":   { "message": "If not set, translations are saved only on this device. Set a Firebase URL to share with your team." },
+  "saveButton":       { "message": "Save" },
+  "savedMessage":     { "message": "Saved!" }
+}

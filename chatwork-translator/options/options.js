@@ -1,3 +1,11 @@
+// i18n適用
+document.querySelectorAll("[data-i18n]").forEach(el => {
+  el.textContent = chrome.i18n.getMessage(el.dataset.i18n);
+});
+document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+  el.placeholder = chrome.i18n.getMessage(el.dataset.i18nPlaceholder);
+});
+
 const apiKeyInput = document.getElementById("apiKey");
 const sourceLangSelect = document.getElementById("sourceLang");
 const targetLangSelect = document.getElementById("targetLang");
@@ -18,7 +26,7 @@ document.getElementById("save").onclick = () => {
     targetLang: targetLangSelect.value,
     firebaseDbUrl: firebaseDbUrlInput.value.trim()
   }, () => {
-    status.textContent = "Saved!";
+    status.textContent = chrome.i18n.getMessage("savedMessage");
     updateFirebaseNotice();
     setTimeout(() => status.textContent = "", 1500);
   });

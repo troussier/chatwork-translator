@@ -1,0 +1,18 @@
+{
+  "extName":          { "message": "Chatwork Translator" },
+  "optionsTitle":     { "message": "Chatwork Translator" },
+  "apiKeyLabel":      { "message": "OpenAI API Key" },
+  "sourceLangLabel":  { "message": "Ngôn ngữ nguồn" },
+  "targetLangLabel":  { "message": "Ngôn ngữ đích" },
+  "langAuto":         { "message": "Tự động nhận diện" },
+  "langAutoTarget":   { "message": "Tự động (ngôn ngữ trình duyệt)" },
+  "langJa":           { "message": "Tiếng Nhật" },
+  "langVi":           { "message": "Tiếng Việt" },
+  "langEn":           { "message": "Tiếng Anh" },
+  "firebaseLabel":    { "message": "Firebase Database URL" },
+  "firebaseHint":     { "message": "(chia sẻ bộ nhớ dịch)" },
+  "firebasePlaceholder": { "message": "https://your-project-default-rtdb.firebaseio.com" },
+  "firebaseNotice":   { "message": "Nếu không cài đặt, bản dịch chỉ được lưu trên thiết bị này. Hãy cài đặt URL Firebase để chia sẻ với nhóm." },
+  "saveButton":       { "message": "Lưu" },
+  "savedMessage":     { "message": "Đã lưu!" }
+}

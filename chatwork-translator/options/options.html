@@ -94,43 +94,43 @@
 </head>
 <body>
 <div class="card">
-  <h2>Chatwork Translator</h2>
+  <h2 data-i18n="optionsTitle"></h2>
 
   <div class="field">
-    <label>OpenAI API Key</label>
+    <label data-i18n="apiKeyLabel"></label>
     <input id="apiKey" type="password" placeholder="sk-...">
   </div>
 
   <div class="row">
     <div class="field">
-      <label>翻訳元言語</label>
+      <label data-i18n="sourceLangLabel"></label>
       <select id="sourceLang">
-        <option value="auto">自動判定</option>
-        <option value="ja">日本語</option>
-        <option value="vi">ベトナム語</option>
-        <option value="en">英語</option>
+        <option value="auto"  data-i18n="langAuto"></option>
+        <option value="ja"    data-i18n="langJa"></option>
+        <option value="vi"    data-i18n="langVi"></option>
+        <option value="en"    data-i18n="langEn"></option>
       </select>
     </div>
     <div class="field">
-      <label>翻訳先言語</label>
+      <label data-i18n="targetLangLabel"></label>
       <select id="targetLang">
-        <option value="auto">自動（ブラウザの言語）</option>
-        <option value="ja">日本語</option>
-        <option value="vi">ベトナム語</option>
-        <option value="en">英語</option>
+        <option value="auto"  data-i18n="langAutoTarget"></option>
+        <option value="ja"    data-i18n="langJa"></option>
+        <option value="vi"    data-i18n="langVi"></option>
+        <option value="en"    data-i18n="langEn"></option>
       </select>
     </div>
   </div>
 
   <div class="field">
-    <label>Firebase Database URL <span class="hint">（翻訳キャッシュの共有）</span></label>
-    <input id="firebaseDbUrl" type="text" placeholder="https://your-project-default-rtdb.firebaseio.com">
-    <div id="firebaseNotice" class="notice">
-      未設定の場合、翻訳はこの端末にのみ保存されます。チームで共有するにはFirebase URLを設定してください。
-    </div>
+    <label>
+      <span data-i18n="firebaseLabel"></span><span class="hint" data-i18n="firebaseHint"></span>
+    </label>
+    <input id="firebaseDbUrl" type="text" data-i18n-placeholder="firebasePlaceholder">
+    <div id="firebaseNotice" class="notice" data-i18n="firebaseNotice"></div>
   </div>
 
-  <button id="save">Save</button>
+  <button id="save" data-i18n="saveButton"></button>
   <p id="status"></p>
 </div>
 
