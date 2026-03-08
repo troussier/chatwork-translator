@@ -6,7 +6,7 @@ function resolveTargetLang(targetLang) {
   return ["ja", "vi", "en"].includes(lang) ? lang : "ja";
 }
 
-async function inject() {
+function inject() {
 
   CWDom.getMessages().forEach((ts) => {
 
@@ -19,7 +19,11 @@ async function inject() {
     const utm = ts.dataset.utm || ts.dataset.tm;
 
     const btn = CWUI.translateButton();
-    btn.onclick = () => doTranslate(messageNode, id, utm, false);
+    btn.onclick = async () => {
+      btn.disabled = true;
+      await doTranslate(messageNode, id, utm, false);
+      btn.disabled = false;
+    };
 
     ts.appendChild(btn);
     ts.dataset.injected = "1";
@@ -46,73 +50,70 @@ async function doTranslate(messageNode, id, utm, forceRetranslate) {
   }
   if (existing) existing.remove();
 
-  chrome.storage.sync.get(
-    ["apiKey", "sourceLang", "targetLang", "firebaseDbUrl"],
-    async ({ apiKey, sourceLang = "auto", targetLang = "ja", firebaseDbUrl }) => {
+  const { apiKey, sourceLang = "auto", targetLang = "ja", firebaseDbUrl } =
+    await chrome.storage.sync.get(["apiKey", "sourceLang", "targetLang", "firebaseDbUrl"]);
 
-      const pre = CWDom.getPreNode(messageNode);
-      if (!pre) return;
+  const pre = CWDom.getPreNode(messageNode);
+  if (!pre) return;
 
-      const resolvedTarget = resolveTargetLang(targetLang);
-      const key = CWCache.key(id, resolvedTarget);
-      const insert = (el) => pre.insertAdjacentElement("afterend", el);
+  const resolvedTarget = resolveTargetLang(targetLang);
+  const key = CWCache.key(id, resolvedTarget);
+  const insert = (el) => pre.insertAdjacentElement("afterend", el);
 
-      if (!forceRetranslate) {
-        const cached = await CWCache.getWithFallback(key, firebaseDbUrl);
-        if (cached) {
-          const stale = CWCache.isStale(key, utm);
-          insert(CWUI.result(
-            buildTranslatedNode(pre, cached.translations),
-            stale,
-            () => doTranslate(messageNode, id, utm, true)
-          ));
-          return;
-        }
-      }
-
-      if (!apiKey) {
-        const optionsUrl = chrome.runtime.getURL("options/options.html");
-        insert(CWUI.error(
-          `APIキーが未設定です。<a href="${optionsUrl}" target="_blank" style="color:#c0392b;">設定画面</a>から登録してください。`
-        ));
-        return;
-      }
-
-      const loading = CWUI.loading();
-      insert(loading);
-
-      try {
-        const parts = CWDom.getTranslatableParts(pre);
-        let translations;
-
-        if (parts.length > 0) {
-          const texts = parts.map(el => CWDom.extractSpanText(el));
-          translations = await CWTranslator.translateParts(texts, apiKey, sourceLang, resolvedTarget);
-        } else {
-          const text = CWDom.extractText(messageNode);
-          const translated = await CWTranslator.translate(text, apiKey, sourceLang, resolvedTarget);
-          translations = [translated];
-        }
-
-        loading.remove();
-
-        CWCache.set(key, translations, utm);
-        CWCache.firebaseSet(key, translations, utm, firebaseDbUrl);
-
-        insert(CWUI.result(
-          buildTranslatedNode(pre, translations),
-          false,
-          () => doTranslate(messageNode, id, utm, true)
-        ));
-      } catch (e) {
-        loading.remove();
-        insert(CWUI.error(
-          `翻訳に失敗しました: ${e.message}`,
-          () => doTranslate(messageNode, id, utm, forceRetranslate)
-        ));
-      }
+  if (!forceRetranslate) {
+    const cached = await CWCache.getWithFallback(key, firebaseDbUrl);
+    if (cached) {
+      const stale = CWCache.isStale(key, utm);
+      insert(CWUI.result(
+        buildTranslatedNode(pre, cached.translations),
+        stale,
+        () => doTranslate(messageNode, id, utm, true)
+      ));
+      return;
     }
-  );
+  }
+
+  if (!apiKey) {
+    const optionsUrl = chrome.runtime.getURL("options/options.html");
+    insert(CWUI.error(
+      `APIキーが未設定です。<a href="${optionsUrl}" target="_blank" style="color:#c0392b;">設定画面</a>から登録してください。`
+    ));
+    return;
+  }
+
+  const loading = CWUI.loading();
+  insert(loading);
+
+  try {
+    const parts = CWDom.getTranslatableParts(pre);
+    let translations;
+
+    if (parts.length > 0) {
+      const texts = parts.map(el => CWDom.extractSpanText(el));
+      translations = await CWTranslator.translateParts(texts, apiKey, sourceLang, resolvedTarget);
+    } else {
+      const text = CWDom.extractText(messageNode);
+      const translated = await CWTranslator.translate(text, apiKey, sourceLang, resolvedTarget);
+      translations = [translated];
+    }
+
+    loading.remove();
+
+    CWCache.set(key, translations, utm);
+    CWCache.firebaseSet(key, translations, utm, firebaseDbUrl);
+
+    insert(CWUI.result(
+      buildTranslatedNode(pre, translations),
+      false,
+      () => doTranslate(messageNode, id, utm, true)
+    ));
+  } catch (e) {
+    loading.remove();
+    insert(CWUI.error(
+      `翻訳に失敗しました: ${e.message}`,
+      () => doTranslate(messageNode, id, utm, forceRetranslate)
+    ));
+  }
 }
 
 new MutationObserver(inject).observe(document.body, {
