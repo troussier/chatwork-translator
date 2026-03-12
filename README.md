@@ -8,7 +8,7 @@ OpenAI の API を使用して翻訳します。
 
 ### Chrome 拡張ファイルのダウンロード
 
-1. 右上の「Code」ボタンをクリックし「Download ZIP」をクリックします。
+1. 右上の緑の「Code」ボタンをクリックし「Download ZIP」をクリックします。
 2. ダウンロードした zip ファイルを解凍します。
 
 ### Chrome 拡張のインストール
@@ -24,7 +24,8 @@ OpenAI の API を使用して翻訳します。
 8. 「Chatwork Translator」の「詳細」をクリックします。
 9. 表示されるメニューの中から「拡張機能のオプション」をクリックします。
 10. OpenAI API Key にキーを入力します。（別途用意します。）
-11. Firebase Database URL に「https://chatwork-translator-default-rtdb.asia-southeast1.firebasedatabase.app/」を入力します。
+11. Firebase Database URL に `https://chatwork-translator-default-rtdb.asia-southeast1.firebasedatabase.app/` を入力します。
+
 12. 「保存」をクリックします。
 
 これでインストール完了です。
