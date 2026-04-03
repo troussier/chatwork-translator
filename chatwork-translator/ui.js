@@ -22,7 +22,7 @@ window.CWUI = {
 
   translateButton() {
     const btn = document.createElement("button");
-    btn.textContent = "翻訳";
+    btn.textContent = chrome.i18n.getMessage("btnTranslate");
     btn.className = "cw-translate-btn";
     btn.style.cssText = `
       margin-left: 6px;
@@ -49,7 +49,7 @@ window.CWUI = {
     hr.style.cssText = "border: none; border-top: 1px solid #e8e8e8; margin: 8px 0;";
 
     const el = document.createElement("div");
-    el.textContent = "翻訳中...";
+    el.textContent = chrome.i18n.getMessage("translating");
     el.className = "cw-translating";
     el.style.cssText = "font-size: 13px; color: #aaa;";
 
@@ -80,7 +80,7 @@ window.CWUI = {
 
     if (onRetry) {
       const retryBtn = document.createElement("button");
-      retryBtn.textContent = "再試行";
+      retryBtn.textContent = chrome.i18n.getMessage("btnRetry");
       retryBtn.style.cssText = `
         padding: 1px 7px;
         font-size: 11px;
@@ -129,13 +129,13 @@ window.CWUI = {
 
     if (stale) {
       const notice = document.createElement("span");
-      notice.textContent = "原文が変更されました";
+      notice.textContent = chrome.i18n.getMessage("staleNotice");
       notice.style.cssText = "font-size: 11px; color: #c8964a;";
       actions.appendChild(notice);
     }
 
     const retranslateBtn = document.createElement("button");
-    retranslateBtn.textContent = "再翻訳";
+    retranslateBtn.textContent = chrome.i18n.getMessage("btnRetranslate");
     retranslateBtn.style.cssText = `
       padding: 1px 7px;
       font-size: 11px;

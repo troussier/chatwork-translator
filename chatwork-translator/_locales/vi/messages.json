@@ -14,5 +14,14 @@
   "firebasePlaceholder": { "message": "https://your-project-default-rtdb.firebaseio.com" },
   "firebaseNotice":   { "message": "Nếu không cài đặt, bản dịch chỉ được lưu trên thiết bị này. Hãy cài đặt URL Firebase để chia sẻ với nhóm." },
   "saveButton":       { "message": "Lưu" },
-  "savedMessage":     { "message": "Đã lưu!" }
+  "savedMessage":     { "message": "Đã lưu!" },
+  "btnTranslate":     { "message": "Dịch" },
+  "btnRetranslate":   { "message": "Dịch lại" },
+  "btnRetry":         { "message": "Thử lại" },
+  "translating":      { "message": "Đang dịch..." },
+  "staleNotice":      { "message": "Nội dung gốc đã thay đổi" },
+  "noApiKey":         { "message": "Chưa cài đặt API key. " },
+  "settingsLink":     { "message": "Trang cài đặt" },
+  "noApiKeySuffix":   { "message": "" },
+  "translateFailed":  { "message": "Dịch thất bại: " }
 }

@@ -76,14 +76,14 @@ async function doTranslate(messageNode, id, utm, forceRetranslate) {
   if (!apiKey) {
     const optionsUrl = chrome.runtime.getURL("options/options.html");
     const msg = document.createDocumentFragment();
-    msg.appendChild(document.createTextNode("APIキーが未設定です。"));
+    msg.appendChild(document.createTextNode(chrome.i18n.getMessage("noApiKey")));
     const a = document.createElement("a");
     a.href = optionsUrl;
-    a.textContent = "設定画面";
+    a.textContent = chrome.i18n.getMessage("settingsLink");
     a.target = "_blank";
     a.style.color = "#c0392b";
     msg.appendChild(a);
-    msg.appendChild(document.createTextNode("から登録してください。"));
+    msg.appendChild(document.createTextNode(chrome.i18n.getMessage("noApiKeySuffix")));
     insert(CWUI.error(msg));
     return;
   }
@@ -117,7 +117,7 @@ async function doTranslate(messageNode, id, utm, forceRetranslate) {
   } catch (e) {
     loading.remove();
     insert(CWUI.error(
-      `翻訳に失敗しました: ${e.message}`,
+      `${chrome.i18n.getMessage("translateFailed")}${e.message}`,
       () => doTranslate(messageNode, id, utm, forceRetranslate)
     ));
   }

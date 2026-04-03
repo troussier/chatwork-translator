@@ -14,5 +14,14 @@
   "firebasePlaceholder": { "message": "https://your-project-default-rtdb.firebaseio.com" },
   "firebaseNotice":   { "message": "未設定の場合、翻訳はこの端末にのみ保存されます。チームで共有するには Firebase URL を設定してください。" },
   "saveButton":       { "message": "保存" },
-  "savedMessage":     { "message": "保存しました！" }
+  "savedMessage":     { "message": "保存しました！" },
+  "btnTranslate":     { "message": "翻訳" },
+  "btnRetranslate":   { "message": "再翻訳" },
+  "btnRetry":         { "message": "再試行" },
+  "translating":      { "message": "翻訳中..." },
+  "staleNotice":      { "message": "原文が変更されました" },
+  "noApiKey":         { "message": "APIキーが未設定です。" },
+  "settingsLink":     { "message": "設定画面" },
+  "noApiKeySuffix":   { "message": "から登録してください。" },
+  "translateFailed":  { "message": "翻訳に失敗しました: " }
 }

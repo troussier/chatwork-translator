@@ -14,5 +14,14 @@
   "firebasePlaceholder": { "message": "https://your-project-default-rtdb.firebaseio.com" },
   "firebaseNotice":   { "message": "If not set, translations are saved only on this device. Set a Firebase URL to share with your team." },
   "saveButton":       { "message": "Save" },
-  "savedMessage":     { "message": "Saved!" }
+  "savedMessage":     { "message": "Saved!" },
+  "btnTranslate":     { "message": "Translate" },
+  "btnRetranslate":   { "message": "Re-translate" },
+  "btnRetry":         { "message": "Retry" },
+  "translating":      { "message": "Translating..." },
+  "staleNotice":      { "message": "Original message has changed" },
+  "noApiKey":         { "message": "API key is not set. " },
+  "settingsLink":     { "message": "Settings" },
+  "noApiKeySuffix":   { "message": "" },
+  "translateFailed":  { "message": "Translation failed: " }
 }
