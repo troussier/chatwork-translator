@@ -24,8 +24,7 @@ OpenAI の API を使用して翻訳します。
 8. 「Chatwork Translator」の「詳細」をクリックします。
 9. 表示されるメニューの中から「拡張機能のオプション」をクリックします。
 10. OpenAI API Key にキーを入力します。（別途用意します。）
-11. Firebase Database URL に下記の値をを入力します。
-    `https://chatwork-translator-e5f0b-default-rtdb.asia-southeast1.firebasedatabase.app/`
+11. Firebase Database URL にURLを入力します。（別途用意します。）
 12. 「保存」をクリックします。
 
 これでインストール完了です。
