@@ -32,3 +32,36 @@ OpenAI の API を使用して翻訳します。
 この状態で Chatwork にアクセスすると、各メッセージに「翻訳」ボタンが表示されます。このボタンを押すと翻訳文が表示されます。
 
 
+----
+
+
+Đây là tiện ích mở rộng Chrome giúp dịch các tin nhắn trên Chatwork.  
+Sử dụng API của OpenAI để thực hiện dịch thuật.  
+Dữ liệu đã dịch sẽ được lưu trên Firebase, cho phép cả nhóm đọc cùng một bản dịch.
+
+## Hướng dẫn cài đặt
+
+### Tải xuống file tiện ích mở rộng Chrome
+
+1. Nhấp vào nút màu xanh lá「Code」ở góc trên bên phải, sau đó chọn「Download ZIP」.
+2. Giải nén file zip vừa tải xuống.
+
+### Cài đặt tiện ích mở rộng Chrome
+
+3. Nhập「chrome://extensions」vào thanh địa chỉ của Chrome.
+4. Bật「Chế độ nhà phát triển (Developer mode)」ở góc trên bên phải cửa sổ.
+5. Nhấp vào「Tải tiện ích chưa được đóng gói (Load unpacked)」.
+6. Chọn thư mục「chatwork-translator」bên trong thư mục đã giải nén.
+7. Tiện ích「Chatwork Translator」sẽ xuất hiện trong danh sách tiện ích mở rộng.
+
+### Cài đặt cấu hình tiện ích mở rộng Chrome
+
+8. Nhấp vào「Chi tiết (Details)」của「Chatwork Translator」.
+9. Trong menu hiển thị, nhấp vào「Tùy chọn tiện ích mở rộng (Extension options)」.
+10. Nhập key vào ô OpenAI API Key.（Chuẩn bị riêng.）
+11. Nhập URL vào ô Firebase Database URL.（Chuẩn bị riêng.）
+12. Nhấp vào「Lưu (Save)」.
+
+Cài đặt hoàn tất.
+
+Sau khi hoàn tất, khi truy cập Chatwork, nút「Dịch」sẽ xuất hiện trên mỗi tin nhắn. Nhấn nút này để hiển thị bản dịch.
